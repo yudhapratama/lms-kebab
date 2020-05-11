@@ -33,7 +33,7 @@ class CoursesController extends Controller
      *   summary="Add courses",
      *   operationId="courses_add",
      *   @SWG\Parameter(
-     *     type="string",                                                                                                                                                                              
+     *     type="string",
      *     name="Authorization",
      *     in="header",
      *     description="Bearer",
@@ -146,7 +146,7 @@ class CoursesController extends Controller
      *   summary="Get courses",
      *   operationId="courses_get",
      *   @SWG\Parameter(
-     *     type="string",                                                                                                                                                                              
+     *     type="string",
      *     name="Authorization",
      *     in="header",
      *     description="Bearer",
@@ -227,7 +227,7 @@ class CoursesController extends Controller
      *   summary="Edit courses",
      *   operationId="courses_edit",
      *   @SWG\Parameter(
-     *     type="string",                                                                                                                                                                              
+     *     type="string",
      *     name="Authorization",
      *     in="header",
      *     description="Bearer",
@@ -275,9 +275,13 @@ class CoursesController extends Controller
         $updatedValue['image'] = $request->image;
         $response = $updatedValue;
 
-        DB::table('courses')
-            ->where('id', $id)
-            ->update($updatedValue);
+        try {
+            DB::table('courses')
+                ->where('id', $id)
+                ->update($updatedValue);
+        } catch(\Illuminati\Database\QueryException $error) {
+            return $this->jsonResponse(500, $error);
+        }
 
         $response['tag'] = array_filter(explode(',', $request->tag));
         $response['image'] = [
@@ -305,16 +309,16 @@ class CoursesController extends Controller
      *   summary="Delete courses",
      *   operationId="courses_delete",
      *   @SWG\Parameter(
-     *     type="string",                                                                                                                                                                              
+     *     type="string",
      *     name="Authorization",
      *     in="header",
      *     description="Bearer",
      *     required=true
      *   ),
-     *   @SWG\Parameter( 
-     *     name="id", 
-     *     in="path", 
-     *     type="integer", 
+     *   @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     type="integer",
      *     description="ID",
      *     required=true
      *   ),
