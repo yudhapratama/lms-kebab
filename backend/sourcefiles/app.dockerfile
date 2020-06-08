@@ -1,6 +1,8 @@
 FROM php:7.2-fpm
 WORKDIR /var/www
 
+RUN usermod -u 1000 www-data
+
 # Fix debconf warnings upon build
 ARG DEBIAN_FRONTEND=noninteractive
 
